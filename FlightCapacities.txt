@@ -1,1 +1,7 @@
 Seattle, Washington, USA - San Francisco, California, USA - 2369 - 2931
+Los Angeles, California, USA - Seattle, Washington, USA - 2176 - 1855
+San Francisco, California, USA - Los Angeles, California, USA - 2488 - 2488
+Boston, Massachusetts, USA - Los Angeles, California, USA - 1382 - 2027
+Seattle, Washington, USA - Boston, Massachusetts, USA - 628 - 628
+Boston, Massachusetts, USA - San Francisco, California, USA - 1380 - 1541
+Chicago, Illinois, USA - Seattle, Washington, USA - 1670 - 1794

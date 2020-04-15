@@ -26,9 +26,6 @@ class City:
         self.init_infection(number_initial_infections)
         self.color_map =[]
 
-    def __str__():
-        return self.city_name
-        
     def init_infection(self, number_initial_infections):
         """Initially infect a certain number of nodes in a network"""
         nx.set_node_attributes(self.network, SUCCEPTIBAL_STATE, 'state') #Everyone starts succeptible
@@ -67,12 +64,12 @@ class City:
 
     def introduce_infected_node(self):
         """Method to infect a random node"""
-        infect_index = random.randint(0, len(self.network.nodes) - 1)
-        while self.network.nodes[infect_index]['state'] != SUCCEPTIBAL_STATE:
-            infect_index = random.randint(0, len(self.network.nodes) - 1)
+        infect_index = random.randint(0, len(self.network_keys) - 1)
+        infect_index = self.network_keys[infect_index]
+        while (self.network.nodes[infect_index]['state'] != SUCCEPTIBAL_STATE):
+            infect_index = self.network_keys[random.randint(0, len(self.network_keys) - 1)]
         self.network.nodes[infect_index]['state'] = EXPOSED_STATE #infect that node
         self.network.nodes[infect_index]['duration'] = self.sigma
         self.number_exposed += 1
 
 
-        
