@@ -5,3 +5,13 @@ Boston, Massachusetts, USA - Los Angeles, California, USA - 1382 - 2027
 Seattle, Washington, USA - Boston, Massachusetts, USA - 628 - 628
 Boston, Massachusetts, USA - San Francisco, California, USA - 1380 - 1541
 Chicago, Illinois, USA - Seattle, Washington, USA - 1670 - 1794
+Dallas, Texas, USA - New York City, New York, USA - 2995 - 7500
+Dallas, Texas, USA - Los Angeles, California, USA - 8300 - 8300
+New York City, New York, USA - Boston, Massachusetts, USA - 5770 - 5770
+Dallas, Texas, USA - Chicago, Illinois, USA - 2500 - 2550
+Miami, Florida, USA - New York City, New York, USA - 3330 - 3330
+Miami, Florida, USA - Los Angeles, California, USA - 4560 - 4580
+Miami, Florida, USA - Chicago, Illinois, USA - 4690 - 4690
+Boston, Massachusetts, USA - Dallas, Texas, USA - 3230 - 3230
+Chicago, Illinois, USA - Los Angeles, California, USA - 4000 - 4000
+New York City, New York, USA - Los Angeles, California, USA - 5000 - 5000
