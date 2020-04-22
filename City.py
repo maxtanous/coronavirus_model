@@ -4,7 +4,7 @@ import osmnx as ox
 
 BETA = .5 # Infection probability
 SIGMA = 5 # Number of days someone stays in Exposed state
-MU = 14 # Number of days someone stays in Infected State
+MU = 15 # Number of days someone stays in Infected State
 
 # Possible states that a node could be in
 SUSCEPTIBLE_STATE = "Susceptible"
@@ -16,7 +16,7 @@ DENSITY_DICT = {"Chicago, Illinois, USA": 23.4,
  "Boston, Massachusetts, USA": 24.2,
  "Los Angeles, California, USA": 26.5,
  "New York City, New York, USA": 51.1,
- "Dallas, Texas, USA": 12.1,
+ "Dallas, Texas, USA": 12.2,
  "Miami, Florida, USA": 23.7,
  "Seattle, Washington, USA": 11.3,
  "San Francisco, California, USA": 23.6,
@@ -71,7 +71,7 @@ class City:
                      self.network.nodes[node_index]['duration'] -= 1
                      if (self.network.nodes[node_index]['duration']) == 0:
                         self.network.nodes[node_index]['state'] = INFECTED_STATE
-                        self.network.nodes[node_index]['duration'] = self.mu
+                        self.network.nodes[node_index]['duration'] = self.mu + random.randint(-5, 5)
                         self.number_infected += 1
 
     def run_sd_seir(self, number_of_steps, severity):
@@ -100,7 +100,7 @@ class City:
                      self.network.nodes[node_index]['duration'] -= 1
                      if (self.network.nodes[node_index]['duration']) == 0:
                         self.network.nodes[node_index]['state'] = INFECTED_STATE
-                        self.network.nodes[node_index]['duration'] = self.mu
+                        self.network.nodes[node_index]['duration'] = self.mu + random.randint(-5, 5)
                         self.number_infected += 1
 
     def select_random(self, severity, neighbors):
