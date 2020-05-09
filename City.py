@@ -33,9 +33,16 @@ class City:
         self.number_infected = 0
         self.number_exposed = 0
         self.number_removed = 0
+        self.init_graph()
         self.network_keys = list(self.network.nodes())
         self.init_infection(number_initial_infections)
         self.color_map =[]
+
+    def init_graph(self):
+        """Improve the functionality of our graph """
+        one_percent_of_nodes = self.network.number_of_nodes() * .01
+        num_swaps = round(one_percent_of_nodes * (self.density/10))
+        self.network = nx.double_edge_swap(self.network, nswaps=num_swaps)
 
     def init_infection(self, number_initial_infections):
         """Initially infect a certain number of nodes in a network"""
@@ -126,3 +133,4 @@ class City:
         self.number_exposed += 1
 
 
+city = City("Los Angeles, California", 10)

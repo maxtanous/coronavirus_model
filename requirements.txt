@@ -1,0 +1,8 @@
+networkx==2.4
+pip==19.2.3
+matplotlib==3.2.1
+cartopy==0.18.0
+opencage==1.2
+osmnx==0.12.1
+Shapely==1.7.0
+wheel==0.34.2
