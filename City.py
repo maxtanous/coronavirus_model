@@ -12,20 +12,24 @@ EXPOSED_STATE = "Exposed"
 INFECTED_STATE = "Infected"
 REMOVED_STATE = "Removed"
 
-DENSITY_DICT = {"Chicago, Illinois, USA": 23.4,
- "Boston, Massachusetts, USA": 24.2,
- "Los Angeles, California, USA": 26.5,
- "New York City, New York, USA": 51.1,
- "Dallas, Texas, USA": 12.2,
- "Miami, Florida, USA": 23.7,
- "Seattle, Washington, USA": 11.3,
- "San Francisco, California, USA": 23.6,
- "Somerville, Massachusetts, USA": 23.7}
+DENSITY_DICT = {
+    "Chicago, Illinois, USA": 23.4,
+    "Boston, Massachusetts, USA": 24.2,
+    "Los Angeles, California, USA": 26.5,
+    "New York City, New York, USA": 51.1,
+    "Dallas, Texas, USA": 12.2,
+    "Miami, Florida, USA": 23.7,
+    "Seattle, Washington, USA": 11.3,
+    "San Francisco, California, USA": 23.6,
+    "Somerville, Massachusetts, USA": 23.7, 
+    "Paris, France":20,
+    "Berlin, Germany":20,
+    "Rome, Italy":20}
 
 class City:
-    def __init__(self, location, number_initial_infections):
+    def __init__(self, location, number_initial_infections, network):
         self.city_name = location
-        self.network = ox.graph_from_place(location)
+        self.network = network
         self.density = DENSITY_DICT[self.city_name]
         self.beta = BETA
         self.sigma = SIGMA
@@ -34,8 +38,9 @@ class City:
         self.number_exposed = 0
         self.number_removed = 0
         self.network_keys = list(self.network.nodes())
-        self.init_infection(number_initial_infections)
-        self.color_map =[]
+        self.init_infections = number_initial_infections
+        self.init_infection(self.init_infections)
+        self.color_map = []
 
     def init_infection(self, number_initial_infections):
         """Initially infect a certain number of nodes in a network"""
@@ -46,7 +51,16 @@ class City:
             self.network.nodes(data=True)[initial_infect_index]['state'] = INFECTED_STATE #infect that node
             self.network.nodes(data=True)[initial_infect_index]['duration'] = self.mu
             self.number_infected += 1
-
+            
+    def refresh_city(self):
+        self.number_exposed = 0
+        self.number_removed = 0
+        self.number_infected = 0
+        for node_index in self.network_keys: # for every node
+            if self.network.nodes[node_index]['state'] != SUSCEPTIBLE_STATE:
+                self.network.nodes[node_index]['state'] = SUSCEPTIBLE_STATE
+        self.init_infection(self.init_infections)
+    
     def run_seir(self, number_of_steps):
         """ Method to run an SEIR Model on the city network for a given number of steps"""
         #loop through infection process 
@@ -71,11 +85,11 @@ class City:
                      self.network.nodes[node_index]['duration'] -= 1
                      if (self.network.nodes[node_index]['duration']) == 0:
                         self.network.nodes[node_index]['state'] = INFECTED_STATE
-                        self.network.nodes[node_index]['duration'] = self.mu + random.randint(-5, 5)
+                        self.network.nodes[node_index]['duration'] = self.mu + random.randint(-2, 6)
                         self.number_infected += 1
 
     def run_sd_seir(self, number_of_steps, severity):
-        """Method to run an SEIR Model on the city network for a given number of steps"""
+        """Method to run an SEIR Model on the city network for a given number of steps during mitigation sequences"""
         #loop through infection process 
         for step in range(number_of_steps): #loop through the number of steps
             print("Starting SEIR Time Step: ", step)
@@ -88,24 +102,24 @@ class City:
                         self.number_removed += 1
                         self.number_infected -= 1
 
-                    initial_neighbors = list(self.network.neighbors(node_index))
-                    sd_neighbors = self.select_random(severity, initial_neighbors)
+                    sd_neighbors = list(self.network.neighbors(node_index))
+                    #sd_neighbors = self.select_random(severity, initial_neighbors)
                     for neighbor in sd_neighbors: #Loop through all the neighbors of that node
-                        if(random.random() <= self.beta and self.network.nodes[neighbor]['state'] == SUSCEPTIBLE_STATE): # If some random number is greater than beta and the person is not immune then we will infect the neighbor
-                            self.network.nodes[neighbor]['state'] = EXPOSED_STATE #infect Neighbor
-                            self.network.nodes[neighbor]['duration'] = self.sigma
-                            self.number_exposed += 1
-                        
+                        if random.random() > 0.75:
+                            if(random.random() <= self.beta/5 and self.network.nodes[neighbor]['state'] == SUSCEPTIBLE_STATE): # If some random number is greater than beta and the person is not immune then we will infect the neighbor
+                                self.network.nodes[neighbor]['state'] = EXPOSED_STATE #infect Neighbor
+                                self.network.nodes[neighbor]['duration'] = self.sigma
+                                self.number_exposed += 1
                 elif self.network.nodes[node_index]['state'] == EXPOSED_STATE:
                      self.network.nodes[node_index]['duration'] -= 1
                      if (self.network.nodes[node_index]['duration']) == 0:
                         self.network.nodes[node_index]['state'] = INFECTED_STATE
-                        self.network.nodes[node_index]['duration'] = self.mu + random.randint(-5, 5)
+                        self.network.nodes[node_index]['duration'] = self.mu + random.randint(-2, 6)
                         self.number_infected += 1
 
     def select_random(self, severity, neighbors):
         included = []
-        length = int(len(neighbors)/severity)
+        length = int(len(neighbors)/(severity/1.5))
         for i in range(length):
             num = random.randint(0, len(neighbors) - 1)
             node = neighbors[num]
@@ -124,5 +138,3 @@ class City:
         self.network.nodes[infect_index]['state'] = EXPOSED_STATE #infect that node
         self.network.nodes[infect_index]['duration'] = self.sigma
         self.number_exposed += 1
-
-
