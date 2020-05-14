@@ -13,7 +13,7 @@ INFECTED_STATE = "Infected"
 REMOVED_STATE = "Removed"
 
 class City:
-    def __init__(self, location, number_initial_infections, network, densty):
+    def __init__(self, location, number_initial_infections, network, density):
         self.city_name = location
         self.network = network
         self.density = density
