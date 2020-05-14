@@ -3,7 +3,7 @@ import random
 import osmnx as ox
 
 BETA = .5 # Infection probability
-SIGMA = 5 # Number of days someone stays in Exposed state
+SIGMA = 3 # Number of days someone stays in Exposed state
 MU = 15 # Number of days someone stays in Infected State
 
 # Possible states that a node could be in
@@ -12,25 +12,11 @@ EXPOSED_STATE = "Exposed"
 INFECTED_STATE = "Infected"
 REMOVED_STATE = "Removed"
 
-DENSITY_DICT = {
-    "Chicago, Illinois, USA": 23.4,
-    "Boston, Massachusetts, USA": 24.2,
-    "Los Angeles, California, USA": 26.5,
-    "New York City, New York, USA": 51.1,
-    "Dallas, Texas, USA": 12.2,
-    "Miami, Florida, USA": 23.7,
-    "Seattle, Washington, USA": 11.3,
-    "San Francisco, California, USA": 23.6,
-    "Somerville, Massachusetts, USA": 23.7, 
-    "Paris, France":20,
-    "Berlin, Germany":20,
-    "Rome, Italy":20}
-
 class City:
-    def __init__(self, location, number_initial_infections, network):
+    def __init__(self, location, number_initial_infections, network, densty):
         self.city_name = location
         self.network = network
-        self.density = DENSITY_DICT[self.city_name]
+        self.density = density
         self.beta = BETA
         self.sigma = SIGMA
         self.mu = MU
@@ -60,6 +46,7 @@ class City:
             self.number_infected += 1
             
     def refresh_city(self):
+        """Clean slate"""
         self.number_exposed = 0
         self.number_removed = 0
         self.number_infected = 0
@@ -72,7 +59,7 @@ class City:
         """ Method to run an SEIR Model on the city network for a given number of steps"""
         #loop through infection process 
         for step in range(number_of_steps): #loop through the number of steps
-            print("Starting SEIR Time Step: ", step)
+            #print("Starting SEIR Time Step: ", step)
             
             for node_index in self.network_keys: # for every node
                 if self.network.nodes[node_index]['state'] == INFECTED_STATE: #If that node is infected
@@ -92,7 +79,7 @@ class City:
                      self.network.nodes[node_index]['duration'] -= 1
                      if (self.network.nodes[node_index]['duration']) == 0:
                         self.network.nodes[node_index]['state'] = INFECTED_STATE
-                        self.network.nodes[node_index]['duration'] = self.mu + random.randint(-2, 6)
+                        self.network.nodes[node_index]['duration'] = self.mu + random.randint(-1, 7)
                         self.number_infected += 1
 
     def run_sd_seir(self, number_of_steps, severity):
@@ -112,8 +99,8 @@ class City:
                     sd_neighbors = list(self.network.neighbors(node_index))
                     #sd_neighbors = self.select_random(severity, initial_neighbors)
                     for neighbor in sd_neighbors: #Loop through all the neighbors of that node
-                        if random.random() > 0.75:
-                            if(random.random() <= self.beta/5 and self.network.nodes[neighbor]['state'] == SUSCEPTIBLE_STATE): # If some random number is greater than beta and the person is not immune then we will infect the neighbor
+                        if random.random() > 0.80:
+                            if(random.random() <= self.beta/4 and self.network.nodes[neighbor]['state'] == SUSCEPTIBLE_STATE): # If some random number is greater than beta and the person is not immune then we will infect the neighbor
                                 self.network.nodes[neighbor]['state'] = EXPOSED_STATE #infect Neighbor
                                 self.network.nodes[neighbor]['duration'] = self.sigma
                                 self.number_exposed += 1
