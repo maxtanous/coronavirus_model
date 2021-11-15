@@ -1,5 +1,5 @@
 networkx==2.4
-pip==19.2.3
+pip==21.1
 matplotlib==3.2.1
 cartopy==0.18.0
 opencage==1.2
